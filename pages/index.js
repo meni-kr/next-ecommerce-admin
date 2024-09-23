@@ -7,7 +7,6 @@ export default function Home() {
   const { data: session } = useSession()
   if (!session) return
 
-  console.log(session.user.image)
 
   return <Layout>
     <div className={'text-blue-900 flex justify-between'}>
