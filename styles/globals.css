@@ -8,7 +8,7 @@ input, textarea{
     @apply mb-2;
 }
 
-input:focus {
+input:focus, textarea:focus {
     @apply border-blue-900 outline-none;
 }
 
@@ -22,4 +22,20 @@ label{
 
 .btn-primary{
     @apply bg-blue-900 text-white px-4 py-1 rounded-md;
+}
+
+table.basic{
+    @apply w-full ;
+}
+
+table.basic thead tr td{
+    @apply bg-blue-100 ;
+}
+
+table.basic tr td{
+@apply border border-blue-200 p-1 ;
+}
+
+table.basic a{
+    @apply bg-blue-900 text-white text-sm p-1 px-2 rounded-md inline-flex gap-1;
 }
