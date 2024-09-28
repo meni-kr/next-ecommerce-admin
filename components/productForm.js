@@ -2,6 +2,8 @@ import { uploadService } from "@/service/upload.service"
 import axios from "axios"
 import { useRouter } from "next/router"
 import { useState } from "react"
+import Spinner from "./spinner"
+import { ReactSortable } from "react-sortablejs"
 
 export default function ProductForm(
     {
@@ -17,6 +19,7 @@ export default function ProductForm(
     const [price, setPrice] = useState(currentPrice || '')
     const [images, setImages] = useState(existingImages || [])
     const [goToProducts, setGoToProducts] = useState(false)
+    const [isUploading, setIsUploading] = useState(false)
 
     const router = useRouter()
 
@@ -37,12 +40,15 @@ export default function ProductForm(
     async function uploadImages(e) {
         const files = e.target?.files
         if (files?.length > 0) {
+            setIsUploading(true)
             const urls = await uploadService.cloudUploadMany(files)
             setImages(oldImages => {
                 return [...oldImages, ...urls]
             })
+            setIsUploading(false)
         }
     }
+
     return (
         <form onSubmit={saveProduct}>
             <label>Product name:</label>
@@ -52,16 +58,28 @@ export default function ProductForm(
                 Photos
 
             </label>
-            <div className="mb-2 flex flex-wrap gap-2">
+            <div className="mb-2 flex flex-wrap gap-1">
+                <ReactSortable
+                    className="flex flex-wrap gap-1"
+                    list={images}
+                    setList={setImages}
+                >
+                    {
+                        !!images?.length && images?.map((link, idx) => (
+                            <div key={idx} className="h-24">
+                                <img src={link} alt="" className="rounded-lg" />
+                            </div>
+                        ))
+
+                    }
+                </ReactSortable>
                 {
-                    !!images?.length && images?.map((link, idx) => (
-                        <div key={idx} className="h-24">
-                            <img src={link} alt="" className="rounded-lg" />
+                    isUploading && (
+                        <div className="h-24 p-1 flex items-center">
+                            <Spinner />
                         </div>
-                    ))
-
+                    )
                 }
-
                 <label className="w-24 h-24 flex flex-col cursor-pointer items-center justify-center text-sm gap-1 text-gray-500 rounded-lg bg-gray-200">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
