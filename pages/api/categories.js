@@ -11,8 +11,6 @@ export default async function handle(req, res) {
 
     if (method === 'POST') {
         const { name, parentCategory} = req.body
-
-        console.log('req.body:', req.body)
         const categoryDoc = await Category.create({
             name,
             parent: parentCategory? parentCategory: null,
@@ -27,6 +25,12 @@ export default async function handle(req, res) {
             parent: parentCategory? parentCategory: null,
         })
         res.json(categoryDoc)
+    }
+
+    if(method === "DELETE"){
+        const {_id} = req.query
+        await Category.deleteOne({_id})
+        res.json('ok')
     }
 
 }

@@ -5,7 +5,7 @@ import { withSwal } from 'react-sweetalert2';
 
 const URL = '/api/categories'
 
-export default function Categories() {
+function Categories({swal}) {
     const [name, setName] = useState('')
     const [categories, setCategories] = useState([])
     const [parentCategory, setParentCategory] = useState('')
@@ -51,6 +51,24 @@ export default function Categories() {
         setEditMode(oldEdit => ({ ...oldEdit, category: categoryToUpdate, edit: true }))
         setName(categoryToUpdate.name)
         setParentCategory(categoryToUpdate.parent?._id)
+    }
+
+    function deleteCategory(category){
+        swal.fire({
+            title: 'Are you sure?',
+            text: `Do you want to Delete ${category.name}?`,
+            showCancelButton:true,
+            cancelButtonText:'Cancel',
+            confirmButtonText:'Yes, Delete!',
+            confirmButtonColor:'#d55',
+            reverseButtons:true
+        }).then(async result => {
+            if(result.isConfirmed){
+                const {_id} = category
+                await axios.delete(URL+'?_id='+_id)
+                getCategories()
+            }
+        })
     }
 
     function cancelEdit() {
@@ -103,7 +121,10 @@ export default function Categories() {
                                     {!editMode.edit ? <>
                                         <button onClick={() => editCategory(category)}
                                             className="btn-primary mr-1">Edit</button>
-                                        <button className="btn-primary">Delete</button>
+                                        <button 
+                                        className="btn-primary"
+                                        onClick={()=> deleteCategory(category)}>
+                                            Delete</button>
                                     </> : editMode.category._id === category._id ?
                                         <button onClick={cancelEdit}
                                             className="btn-primary">
@@ -120,3 +141,7 @@ export default function Categories() {
         </Layout>
     )
 }
+
+export default withSwal(({swal},ref) => (
+    <Categories swal={swal} />
+))
