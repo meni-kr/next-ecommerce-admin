@@ -145,7 +145,7 @@ export default function ProductForm(
             <textarea placeholder="description"
                 value={description} onChange={(e) => setDescription(e.target.value)}
             />
-            <label>Price:</label>
+            <label>Price (in USD)</label>
             <input type="number" placeholder="price"
                 value={price} onChange={(e) => setPrice(e.target.value)}
             />
