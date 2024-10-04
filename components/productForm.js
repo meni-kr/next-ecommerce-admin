@@ -12,7 +12,8 @@ export default function ProductForm(
         description: currentDescription,
         price: currentPrice,
         images: existingImages,
-        category: assignedCategory
+        category: assignedCategory,
+        properties:assignedProperties
     }) {
 
     const [title, setTitle] = useState(currentTitle || '')
@@ -23,7 +24,7 @@ export default function ProductForm(
     const [goToProducts, setGoToProducts] = useState(false)
     const [isUploading, setIsUploading] = useState(false)
     const [categories, setCategories] = useState([])
-    const [productProperties,setProductProperties] = useState()
+    const [productProperties, setProductProperties] = useState(assignedProperties || {})
 
     const router = useRouter()
 
@@ -35,7 +36,8 @@ export default function ProductForm(
 
     async function saveProduct(e) {
         e.preventDefault()
-        const data = { title, description, price, images, category }
+        const data = { title, description, price, images, category,
+            properties:productProperties}
         if (_id) {
             await axios.put('/api/products', { ...data, _id })
         } else {
@@ -69,6 +71,14 @@ export default function ProductForm(
             catInfo = parentCat
         }
     }
+
+    function setProductProp(propName, value) {
+        setProductProperties(prev => {
+            const newProductProp = { ...prev }
+            newProductProp[propName] = value
+            return newProductProp
+        })
+    }
     return (
         <form onSubmit={saveProduct}>
             <label>Product name:</label>
@@ -81,11 +91,15 @@ export default function ProductForm(
                     <option key={idx} value={category._id}>{category.name}</option>
                 ))}
             </select>
-            {propertiesToFill.length > 0 && propertiesToFill.map((p) => (
-                <div className="flex gap-1">
+            <label>properties</label>
+            {propertiesToFill.length > 0 && propertiesToFill.map((p,idx) => (
+                <div key={idx} className="flex gap-1">
                     <div>{p.name}</div>
-                    <select >
-                        {p.values.map((val,idx)=>(
+                    <select
+                        value={productProperties[p.name]} 
+                        onChange={(e) => setProductProp(p.name, e.target.value)}>
+                            <option value="">Not assigned</option>
+                        {p.values.map((val, idx) => (
                             <option key={idx} value={val}>{val}</option>
                         ))}
                     </select>
