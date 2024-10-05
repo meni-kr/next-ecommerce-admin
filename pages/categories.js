@@ -32,12 +32,13 @@ function Categories({ swal }) {
 
     async function saveCategory(e) {
         e.preventDefault()
-        const data = { name,
+        const data = {
+            name,
             parentCategory,
-            properties:properties.map(p => ({
-                name:p.name,
-                values:p.values.split(','),
-            })), 
+            properties: properties.map(p => ({
+                name: p.name,
+                values: p.values.split(','),
+            })),
         }
         try {
             if (!editMode.edit) {
@@ -58,10 +59,11 @@ function Categories({ swal }) {
         setEditMode(oldEdit => ({ ...oldEdit, category: categoryToUpdate, edit: true }))
         setName(categoryToUpdate.name)
         setParentCategory(categoryToUpdate.parent?._id)
-        setProperties(categoryToUpdate.properties.map(({name,values})=>(
-           {name,
-            values:values.join(',')
-           } 
+        setProperties(categoryToUpdate.properties.map(({ name, values }) => (
+            {
+                name,
+                values: values.join(',')
+            }
         )))
     }
 
@@ -159,7 +161,9 @@ function Categories({ swal }) {
                                 value={property.values}
                                 onChange={(e) => handlePropertyValuesChange(idx, property, e.target.value)}
                                 placeholder="values, comma separated" />
-                            <button type="button" onClick={() => removeProperty(idx)} className="btn-default">Remove</button>
+                            <button type="button" onClick={() => removeProperty(idx)} className="btn-red">
+                                Remove
+                            </button>
                         </div>
                     ))}
                 </div>
@@ -196,9 +200,9 @@ function Categories({ swal }) {
                                         </td>
                                         <td>
                                             <button onClick={() => editCategory(category)}
-                                                className="btn-primary mr-1">Edit</button>
+                                                className="btn-default mr-1">Edit</button>
                                             <button
-                                                className="btn-primary"
+                                                className="btn-red"
                                                 onClick={() => deleteCategory(category)}>
                                                 Delete</button>
                                         </td>
